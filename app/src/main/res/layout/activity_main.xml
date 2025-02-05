@@ -18,7 +18,7 @@
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:src="@drawable/sun_halo"
-            android:alpha="1"/>
+            android:alpha="0.5"/>
 
         <ImageView
             android:layout_width="100dp"

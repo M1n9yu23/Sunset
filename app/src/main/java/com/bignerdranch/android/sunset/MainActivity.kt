@@ -52,6 +52,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        sunHaloView.x = sunView.x + (sunView.width - sunHaloView.width) / 2
+        sunHaloView.y = sunView.y + (sunView.height - sunHaloView.height) / 2
+
     }
 
     // 일몰 애니메이션
@@ -64,9 +68,14 @@ class MainActivity : AppCompatActivity() {
             .apply { interpolator = AccelerateInterpolator() }
 
         // 후광도 함께 이동하도록 설정
-        val haloHeightAnimator = ObjectAnimator.ofFloat(sunHaloView, "y", sunYStart, sunYEnd)
-            .setDuration(3000)
-            .apply { interpolator = AccelerateInterpolator() }
+        val haloHeightAnimator = ObjectAnimator.ofFloat(
+            sunHaloView, "y",
+            sunHaloView.y, // 초기 위치
+            sunHaloView.y + (sunYEnd - sunYStart) // 태양과 같은 거리 이동
+        ).setDuration(3000).apply {
+            interpolator = AccelerateInterpolator()
+        }
+
 
         val sunsetSkyAnimator = ObjectAnimator.ofInt(skyView, "backgroundColor", blueSkyColor, sunsetSkyColor)
             .setDuration(3000)
@@ -96,9 +105,14 @@ class MainActivity : AppCompatActivity() {
             .apply { interpolator = AccelerateInterpolator() }
 
         // 후광도 함께 이동하도록 설정
-        val haloHeightAnimator = ObjectAnimator.ofFloat(sunHaloView, "y", sunYStart, sunYEnd)
-            .setDuration(3000)
-            .apply { interpolator = AccelerateInterpolator() }
+        val haloHeightAnimator = ObjectAnimator.ofFloat(
+            sunHaloView, "y",
+            sunHaloView.y, // 초기 위치
+            sunHaloView.y + (sunYEnd - sunYStart) // 태양과 같은 거리 이동
+        ).setDuration(3000).apply {
+            interpolator = AccelerateInterpolator()
+        }
+
 
         val nightToSunsetSkyAnimator = ObjectAnimator.ofInt(skyView, "backgroundColor", nightSkyColor, sunsetSkyColor)
             .setDuration(1500)
@@ -121,42 +135,44 @@ class MainActivity : AppCompatActivity() {
 
     // 태양 + 후광 효과 (타오르는 느낌)
     private fun createSunEffectAnimation(): AnimatorSet {
-        // 태양이 커졌다 작아졌다 하는 애니메이션
-        val scaleUpX = ObjectAnimator.ofFloat(sunView, "scaleX", 1f, 1.3f).apply {
-            duration = 1000
+        // 태양 크기 변화 (부드럽게)
+        val scaleUpX = ObjectAnimator.ofFloat(sunView, "scaleX", 1f, 1.15f).apply {
+            duration = 2000
             repeatCount = ObjectAnimator.INFINITE
             repeatMode = ObjectAnimator.REVERSE
             interpolator = OvershootInterpolator()
         }
 
-        val scaleUpY = ObjectAnimator.ofFloat(sunView, "scaleY", 1f, 1.3f).apply {
-            duration = 1000
+        val scaleUpY = ObjectAnimator.ofFloat(sunView, "scaleY", 1f, 1.15f).apply {
+            duration = 2000
             repeatCount = ObjectAnimator.INFINITE
             repeatMode = ObjectAnimator.REVERSE
             interpolator = OvershootInterpolator()
         }
 
-        val alphaAnimator = ObjectAnimator.ofFloat(sunView, "alpha", 1f, 0.9f, 1f).apply {
-            duration = 1000
+        // 태양 밝기 변화 (부드러운 빛의 변화)
+        val alphaAnimator = ObjectAnimator.ofFloat(sunView, "alpha", 1f, 0.95f, 1f).apply {
+            duration = 2000
             repeatCount = ObjectAnimator.INFINITE
             repeatMode = ObjectAnimator.REVERSE
         }
 
-        // 후광 효과 (halo) 확장 & 축소
-        val haloScaleX = ObjectAnimator.ofFloat(sunHaloView, "scaleX", 1f, 1.3f).apply {
-            duration = 1000
+        // 후광 효과 (빛이 서서히 확장)
+        val haloScaleX = ObjectAnimator.ofFloat(sunHaloView, "scaleX", 1f, 1.2f).apply {
+            duration = 2500
             repeatCount = ObjectAnimator.INFINITE
             repeatMode = ObjectAnimator.REVERSE
         }
 
-        val haloScaleY = ObjectAnimator.ofFloat(sunHaloView, "scaleY", 1f, 1.3f).apply {
-            duration = 1000
+        val haloScaleY = ObjectAnimator.ofFloat(sunHaloView, "scaleY", 1f, 1.2f).apply {
+            duration = 2500
             repeatCount = ObjectAnimator.INFINITE
             repeatMode = ObjectAnimator.REVERSE
         }
 
-        val haloAlpha = ObjectAnimator.ofFloat(sunHaloView, "alpha", 0.5f, 0.9f, 0.5f).apply {
-            duration = 1000
+        // 후광 밝기 변화 (부드러운 빛의 깜빡임)
+        val haloAlpha = ObjectAnimator.ofFloat(sunHaloView, "alpha", 0.7f, 0.9f, 0.75f).apply {
+            duration = 2500
             repeatCount = ObjectAnimator.INFINITE
             repeatMode = ObjectAnimator.REVERSE
         }
@@ -165,6 +181,7 @@ class MainActivity : AppCompatActivity() {
             playTogether(scaleUpX, scaleUpY, alphaAnimator, haloScaleX, haloScaleY, haloAlpha)
         }
     }
+
 
     // 현재 애니메이션을 반대로 실행
     private fun reverseAnimation() {
